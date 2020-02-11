@@ -7,5 +7,5 @@ all:
       name: {{ entry.name }}
       metal: {{ ansible_host }}
       type: {{ (nodes | selectattr('name', 'equalto', entry.name) | first ).type }}
-      ansible_private_key_file: "ssh_keys/id_{{ entry.name }}_rsa"
+      ansible_private_key_file: "{{ ssh_keys_path }}/id_{{ entry.name }}_rsa"
 {% endfor %}

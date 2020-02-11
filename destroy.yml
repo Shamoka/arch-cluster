@@ -8,7 +8,12 @@
         state: absent
         variables_file: "{{ terraform_path }}/nodes.tfvars"
 
-    - name: Remove ssh keys
+    - name: Delete project directories
       file:
-        path: "{{ project_path }}/ssh_keys"
         state: absent
+        path: "{{ item }}"
+      loop:
+        - "{{ project_path }}"
+        - "{{ terraform_path }}"
+        - "{{ cloudinit_path }}"
+        - "{{ ssh_keys_path }}"

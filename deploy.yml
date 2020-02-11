@@ -4,24 +4,29 @@
   hosts: all
 
   tasks:
+    - name: Create directories
+      file:
+        state: directory
+        path: "{{ item }}"
+      loop:
+        - "{{ project_path }}"
+        - "{{ terraform_path }}"
+        - "{{ cloudinit_path }}"
+        - "{{ ssh_keys_path }}"
+
     - name: Create terraform tfvars
       template:
         src: templates/nodes.tfvars.j2
         dest: "{{ terraform_path }}/nodes.tfvars"
 
-    - name: Create cloud-init directory
-      file:
-        state: directory
-        path: "{{ terraform_path }}/cloud-init"
-
-    - name: Create ssh keys directory
-      file:
-        state: directory
-        path: "{{ project_path }}/ssh_keys"
+    - name: Create terraform plan
+      copy:
+        src: arch.tf
+        dest: "{{ terraform_path }}"
 
     - name: Generate ssh keys
       openssh_keypair:
-        path: "{{ project_path }}/ssh_keys/id_{{ item.name }}_rsa"
+        path: "{{ ssh_keys_path }}/id_{{ item.name }}_rsa"
         type: rsa
         size: 4096
       loop: "{{ nodes }}"
@@ -29,17 +34,24 @@
     - name: Create user-data for cloud init
       template:
         src: templates/user-data.j2
-        dest: "{{ terraform_path }}/cloud-init/user-data-{{ item.name }}"
+        dest: "{{ cloudinit_path }}/user-data-{{ item.name }}"
+      loop: "{{ nodes }}"
+
+    - name: Create meta-data for cloud init
+      template:
+        src: templates/meta-data.j2
+        dest: "{{ cloudinit_path }}/meta-data-{{ item.name }}"
       loop: "{{ nodes }}"
 
     - name: Deploy
       terraform:
         project_path: "{{ terraform_path }}"
         state: present
-        variables_file: "{{ terraform_path }}/nodes.tfvars"
+        variables_file: nodes.tfvars
+        force_init: yes
       register: tf_out
 
-    - name: Write VM list
+    - name: Write VM inventory
       template:
         src: vms.j2
-        dest: "{{ project_path }}/vms"
+        dest: "{{ vm_list }}"

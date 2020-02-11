@@ -5,9 +5,7 @@ users:
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     shell: /bin/bash
     ssh_authorized_keys:
-      - {{ lookup('file', "ssh_keys/id_{{ item.name }}_rsa.pub") }}
-
-hostname: "{{ item.name }}"
+      - {{ lookup('file', "{{ ssh_keys_path }}/id_{{ item.name }}_rsa.pub") }}
 
 network:
   config: disabled

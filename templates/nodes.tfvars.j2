@@ -1,13 +1,20 @@
 qemu_uri = "{{ hostvars[ansible_host].qemu_uri }}"
 
 base_volume = {
-	name = "{{ hostvars[ansible_host].base_volume.name }}"
-	pool = "{{ hostvars[ansible_host].base_volume.pool }}"
+	name = "{{ hostvars[ansible_host].base.name }}"
+	pool = "{{ hostvars[ansible_host].base.pool }}"
 }
 
 init = {
 	name = "{{ hostvars[ansible_host].init.name }}"
 	pool = "{{ hostvars[ansible_host].init.pool }}"
+}
+
+paths = {
+	project = "{{ hostvars[ansible_host].project_path }}"
+	tf = "{{ hostvars[ansible_host].terraform_path }}"
+	cloudinit = "{{ hostvars[ansible_host].cloudinit_path }}"
+	ssh_keys = "{{ hostvars[ansible_host].ssh_keys_path }}"
 }
 
 volume_pool = "{{ hostvars[ansible_host].volume_pool }}"
