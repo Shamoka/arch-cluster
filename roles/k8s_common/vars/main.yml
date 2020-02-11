@@ -9,3 +9,4 @@ packages:
   - docker
   - crictl-bin
   - bridge-utils
+  - python-openshift

@@ -55,6 +55,7 @@ resource "libvirt_cloudinit_disk" "commoninit" {
 	pool = var.init.pool
 	user_data = data.template_file.user_data[count.index].rendered
 	meta_data = data.template_file.meta_data[count.index].rendered
+	network_config = data.template_file.network_config[count.index].rendered
 	count = length(var.nodes)
 }
 
@@ -65,6 +66,11 @@ data "template_file" "user_data" {
 
 data "template_file" "meta_data" {
 	template = file("${var.paths.cloudinit}/meta-data-${var.nodes[count.index].name}")
+	count = length(var.nodes)
+}
+
+data "template_file" "network_config" {
+	template = file("${var.paths.cloudinit}/network-config-${var.nodes[count.index].name}")
 	count = length(var.nodes)
 }
 

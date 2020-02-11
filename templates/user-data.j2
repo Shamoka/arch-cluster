@@ -7,5 +7,4 @@ users:
     ssh_authorized_keys:
       - {{ lookup('file', "{{ ssh_keys_path }}/id_{{ item.name }}_rsa.pub") }}
 
-network:
-  config: disabled
+fqdn: "{{ item.name }}.{{ hostvars[ansible_host].network.domain }}"

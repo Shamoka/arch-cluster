@@ -1,4 +1,23 @@
-- name: Check for cluster presence
-  k8s_info:
-    kind: pod
-  register: pod_list
+---
+- name: Init cluster (kubeadm)
+  command: "kubeadm init --pod-network-cidr={{ pod_network_cidr }} --ignore-preflight-errors all"
+  become: yes
+
+- name: Create .kube directory for cluster admin
+  file:
+    state: directory
+    mode: 0700
+    owner: kube
+    group: kube
+    path: /home/kube/.kube
+  become: yes
+
+- name: Copy cluster config to kube user directory
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: /home/kube/.kube/config
+    mode: 0600
+    owner: kube
+    group: kube
+    remote_src: yes
+  become: yes

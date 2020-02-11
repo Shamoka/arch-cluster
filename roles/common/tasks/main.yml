@@ -13,6 +13,12 @@
     use: trizen
     name: "{{ packages }}"
 
+- name: Set correct hostname
+  hostname:
+    name: "{{ hostvars[ansible_host].name }}"
+    use: systemd
+  become: yes
+
 - name: Set firewall configuration
   copy:
     src: iptables.rules

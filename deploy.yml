@@ -43,6 +43,12 @@
         dest: "{{ cloudinit_path }}/meta-data-{{ item.name }}"
       loop: "{{ nodes }}"
 
+    - name: Create network-config for cloud init
+      template:
+        src: templates/network-config.j2
+        dest: "{{ cloudinit_path }}/network-config-{{ item.name }}"
+      loop: "{{ nodes }}"
+
     - name: Deploy
       terraform:
         project_path: "{{ terraform_path }}"
