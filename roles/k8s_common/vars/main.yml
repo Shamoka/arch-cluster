@@ -1,0 +1,8 @@
+---
+packages:
+  - kubectl-bin
+  - kubeadm-bin
+  - kubelet-bin
+  - ebtables
+  - ethtool
+  - socat

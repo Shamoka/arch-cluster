@@ -1,0 +1,22 @@
+---
+- name: Assign hosts to groups
+
+  hosts: all
+
+  roles:
+    - common
+
+  tasks:
+    - name: Assign hosts to groups
+      add_host:
+        name: "{{ ansible_host }}"
+        groups:
+          - "{{ hostvars[ansible_host].type }}"
+
+
+- name: Provision kubernetes control nodes
+
+  hosts: k8s_control
+
+  roles:
+    - k8s_common

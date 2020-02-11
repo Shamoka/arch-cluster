@@ -1,0 +1,4 @@
+- name: Install requiered packages
+  aur:
+    use: trizen
+    name: "{{ packages }}"

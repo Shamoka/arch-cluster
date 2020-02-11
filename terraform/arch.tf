@@ -59,10 +59,6 @@ resource "libvirt_network" "network" {
 	domain = var.network.domain
 	addresses = [var.network.ip]
 
-	dns {
-		enabled = true
-	}
-
 	dhcp {
 		enabled = true
 	}

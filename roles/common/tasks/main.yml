@@ -1,0 +1,28 @@
+---
+- name: Install build utils
+  pacman:
+    name: base-devel
+  become: yes
+
+- name: Install trizen
+  aur:
+    name: trizen
+
+- name: Install requiered packages
+  aur:
+    use: trizen
+    name: "{{ packages }}"
+
+- name: Set firewall configuration
+  copy:
+    src: iptables.rules
+    dest: /etc/iptables/iptables.rules
+  become: yes
+  notify: "restart firewall"
+
+- name: start firewall
+  service:
+    name: iptables
+    enabled: yes
+    state: started
+  become: yes

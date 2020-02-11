@@ -1,0 +1,6 @@
+- name: restart firewall
+  service:
+    state: restarted
+    name: iptables
+  listen: "restart firewall"
+  become: yes
