@@ -1,0 +1,7 @@
+terraform/*.tfvars
+terraform/*.terraform
+terraform/*.tfstate*
+host*
+terraform/cloud-init
+ssh_keys
+vms

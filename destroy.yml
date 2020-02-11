@@ -1,0 +1,14 @@
+---
+- hosts: all
+
+  tasks:
+    - name: Destroy VMs
+      terraform:
+        project_path: "{{ terraform_path }}"
+        state: absent
+        variables_file: "{{ terraform_path }}/nodes.tfvars"
+
+    - name: Remove ssh keys
+      file:
+        path: "{{ project_path }}/ssh_keys"
+        state: absent

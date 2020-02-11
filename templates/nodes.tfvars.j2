@@ -1,0 +1,30 @@
+qemu_uri = "{{ hostvars[ansible_host].qemu_uri }}"
+
+base_volume = {
+	name = "{{ hostvars[ansible_host].base_volume.name }}"
+	pool = "{{ hostvars[ansible_host].base_volume.pool }}"
+}
+
+init = {
+	name = "{{ hostvars[ansible_host].init.name }}"
+	pool = "{{ hostvars[ansible_host].init.pool }}"
+}
+
+volume_pool = "{{ hostvars[ansible_host].volume_pool }}"
+
+network = {
+	name = "{{ hostvars[ansible_host].network.name }}"
+	ip = "{{ hostvars[ansible_host].network.ip }}"
+	domain = "{{ hostvars[ansible_host].network.domain }}"
+}
+
+nodes = [
+	{% for elem in hostvars[ansible_host].nodes %}
+	{
+		name = "{{ elem.name }}"
+		memory = "{{ elem.memory }}"
+		vcpu = "{{ elem.vcpu }}"
+		network = "{{ elem.network }}"
+	},
+	{% endfor %}
+]

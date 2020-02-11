@@ -1,0 +1,13 @@
+#cloud-config
+
+users:
+  - name: ansible
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - {{ lookup('file', "ssh_keys/id_{{ item.name }}_rsa.pub") }}
+
+hostname: "{{ item.name }}"
+
+network:
+  config: disabled
