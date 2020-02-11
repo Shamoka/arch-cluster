@@ -1,0 +1,4 @@
+- name: Check for cluster presence
+  k8s_info:
+    kind: pod
+  register: pod_list

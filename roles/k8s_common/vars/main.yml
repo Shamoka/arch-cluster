@@ -6,3 +6,6 @@ packages:
   - ebtables
   - ethtool
   - socat
+  - docker
+  - crictl-bin
+  - bridge-utils

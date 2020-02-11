@@ -2,3 +2,51 @@
   aur:
     use: trizen
     name: "{{ packages }}"
+
+- name: Perform required sysctl
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: yes
+    state: present
+    reload: yes
+  become: yes
+
+- name: Perform required sysctl
+  sysctl:
+    name: net.brige.bridge-nf-call-iptables
+    state: absent
+  become: yes
+
+- name: Enable kubelet.service
+  service:
+    name: kubelet
+    enabled: yes
+  become: yes
+
+- name: Create docker directory
+  file:
+    state: directory
+    path: /etc/docker
+  become: yes
+
+- name: Configure docker
+  copy:
+    src: daemon.json
+    dest: /etc/docker/daemon.json
+  become: yes
+
+- name: Start docker daemon
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Create kube user
+  user:
+    name: kube
+    create_home: yes
+    groups:
+      - docker
+  become: yes

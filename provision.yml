@@ -9,14 +9,26 @@
   tasks:
     - name: Assign hosts to groups
       add_host:
-        name: "{{ ansible_host }}"
+        name: "{{ item }}"
         groups:
-          - "{{ hostvars[ansible_host].type }}"
+          - "{{ hostvars[item].type }}"
+      loop: "{{ groups['all'] }}"
+      changed_when: false
 
 
-- name: Provision kubernetes control nodes
+- name: Provision kubernetes nodes
 
-  hosts: k8s_control
+  hosts:
+    - k8s_control
+    - k8s_worker
 
   roles:
     - k8s_common
+
+- name: Provision kubernetes control nodes
+
+  hosts:
+    - k8s_control
+
+  roles:
+    - k8s_control
