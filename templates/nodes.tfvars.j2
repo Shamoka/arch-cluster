@@ -1,32 +1,27 @@
-qemu_uri = "{{ hostvars[ansible_host].qemu_uri }}"
+qemu_uri = "{{ qemu_uri }}"
 
 base_volume = {
-	name = "{{ hostvars[ansible_host].base.name }}"
-	pool = "{{ hostvars[ansible_host].base.pool }}"
-}
-
-init = {
-	name = "{{ hostvars[ansible_host].init.name }}"
-	pool = "{{ hostvars[ansible_host].init.pool }}"
+	name = "{{ base.name }}"
+	pool = "{{ base.pool }}"
 }
 
 paths = {
-	project = "{{ hostvars[ansible_host].project_path }}"
-	tf = "{{ hostvars[ansible_host].terraform_path }}"
-	cloudinit = "{{ hostvars[ansible_host].cloudinit_path }}"
-	ssh_keys = "{{ hostvars[ansible_host].ssh_keys_path }}"
+	project = "{{ project_path }}"
+	tf = "{{ terraform_path }}"
+	cloudinit = "{{ cloudinit_path }}"
+	ssh_keys = "{{ ssh_keys_path }}"
 }
 
-volume_pool = "{{ hostvars[ansible_host].volume_pool }}"
+volume_pool = "{{ volume_pool }}"
 
 network = {
-	name = "{{ hostvars[ansible_host].network.name }}"
-	ip = "{{ hostvars[ansible_host].network.ip }}"
-	domain = "{{ hostvars[ansible_host].network.domain }}"
+	name = "{{ network.name }}"
+	ip = "{{ network.ip }}"
+	domain = "{{ network.domain }}"
 }
 
 nodes = [
-	{% for elem in hostvars[ansible_host].nodes %}
+	{% for elem in nodes %}
 	{
 		name = "{{ elem.name }}"
 		memory = "{{ elem.memory }}"

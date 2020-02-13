@@ -8,6 +8,7 @@
       file:
         state: directory
         path: "{{ item }}"
+        mode: 0700
       loop:
         - "{{ project_path }}"
         - "{{ terraform_path }}"
@@ -30,6 +31,7 @@
         type: rsa
         size: 4096
       loop: "{{ nodes }}"
+      register: keys
 
     - name: Create user-data for cloud init
       template:

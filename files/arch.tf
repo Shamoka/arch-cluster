@@ -30,13 +30,6 @@ variable "network" {
 	})
 }
 
-variable "init" {
-	type = object({
-		name = string
-		pool = string
-	})
-}
-
 variable "paths" {
 	type = object({
 		project = string
@@ -51,8 +44,8 @@ provider "libvirt" {
 }
 
 resource "libvirt_cloudinit_disk" "commoninit" {
-	name = "${var.nodes[count.index].name}_${var.init.name}"
-	pool = var.init.pool
+	name = "${var.nodes[count.index].name}_cloudinit.iso"
+	pool = var.volume_pool
 	user_data = data.template_file.user_data[count.index].rendered
 	meta_data = data.template_file.meta_data[count.index].rendered
 	network_config = data.template_file.network_config[count.index].rendered
