@@ -15,14 +15,21 @@
   aur:
     name: trizen
 
+- name: Check trizen packages
+  command: "trizen -T {{ packages_aur | join(' ' ) }}"
+  register: packages_present
+  changed_when: false
+
 - name: Install aur packages
   command: "trizen -S --movepkg --noconfirm --needed {{ packages_aur | join(' ') }}"
+  when: packages_present.rc != 0
 
 - name: Create aur repo
   shell: repo-add custom_aur.db.tar.gz *.pkg.*
   args:
     chdir: "{{ pacman_cache_path }}"
   become: yes
+  when: packages_present.rc != 0
 
 - name: Install pacman packages
   pacman:
