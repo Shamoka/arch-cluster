@@ -1,0 +1,65 @@
+---
+- name: umount tmpfs from /tmp
+  systemd:
+    name: tmp.mount
+    masked: yes
+    state: stopped
+  become: yes
+
+- name: Install build utils
+  pacman:
+    name: base-devel
+  become: yes
+
+- name: Install trizen
+  aur:
+    name: trizen
+
+- name: Install aur packages
+  command: "trizen -S --movepkg --noconfirm --needed {{ packages_aur | join(' ') }}"
+
+- name: Create aur repo
+  shell: repo-add custom_aur.db.tar.gz *.pkg.*
+  args:
+    chdir: "{{ pacman_cache_path }}"
+  become: yes
+
+- name: Install pacman packages
+  pacman:
+    name: "{{ packages_pacman }}"
+    state: present
+  become: yes
+
+- name: Set firewall configuration
+  copy:
+    src: iptables.rules
+    dest: /etc/iptables/iptables.rules
+  become: yes
+  notify: "restart firewall"
+
+- name: start firewall
+  service:
+    name: iptables
+    enabled: yes
+    state: started
+  become: yes
+
+- name: Create link to package database
+  file:
+    state: link
+    src: "{{ pacman_db_path }}/{{ item }}"
+    dest: "{{ pacman_cache_path }}/{{ item }}"
+  loop: "{{ pacman_db_names }}"
+  become: yes
+
+- name: Create nginx repository config
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
+  become: yes
+
+- name: Start repository server
+  service:
+    name: nginx
+    state: started
+  become: yes

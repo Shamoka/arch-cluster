@@ -1,0 +1,14 @@
+[Unit]
+Description=Package repository
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/darkhttpd /var/cache/pacman/pkg/ --uid http --gid http --chroot --no-server-id
+ProtectSystem=full
+ProtectHome=on
+PrivateDevices=on
+NoNewPrivileges=on
+
+[Install]
+WantedBy=multi-user.target

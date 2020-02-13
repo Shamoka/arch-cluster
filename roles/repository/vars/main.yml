@@ -1,0 +1,26 @@
+---
+packages_pacman:
+  - ebtables
+  - ethtool
+  - socat
+  - docker
+  - bridge-utils
+  - iptables
+  - inetutils
+  - nginx
+
+packages_aur:
+  - crictl-bin
+  - kubectl-bin
+  - kubeadm-bin
+  - kubelet-bin
+  - python-openshift
+
+pacman_db_path: /var/lib/pacman/sync
+
+pacman_cache_path: /var/cache/pacman/pkg
+
+pacman_db_names:
+  - community.db
+  - core.db
+  - extra.db

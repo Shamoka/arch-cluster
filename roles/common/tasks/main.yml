@@ -1,23 +1,14 @@
 ---
-- name: Install build utils
-  pacman:
-    name: base-devel
+- name: Copy pacman.conf
+  template:
+    src: pacman.conf.j2
+    dest: /etc/pacman.conf
   become: yes
-
-- name: Install trizen
-  aur:
-    name: trizen
 
 - name: Install requiered packages
-  aur:
-    use: trizen
+  pacman:
     name: "{{ packages }}"
-
-- name: Set correct hostname
-  hostname:
-    name: "{{ hostvars[ansible_host].name }}"
-    use: systemd
-  become: yes
+    state: present
 
 - name: Set firewall configuration
   copy:

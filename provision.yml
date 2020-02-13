@@ -3,9 +3,6 @@
 
   hosts: all
 
-  roles:
-    - common
-
   tasks:
     - name: Assign hosts to groups
       add_host:
@@ -14,6 +11,25 @@
           - "{{ hostvars[item].type }}"
       loop: "{{ groups['all'] }}"
       changed_when: false
+
+
+- name: Provision package repository
+  
+  hosts: repository
+
+  roles:
+    - repository
+
+
+- name: Provison common
+
+  hosts:
+    - k8s_control
+    - k8s_worker
+    - storage
+
+  roles:
+    - common
 
 
 - name: Provision kubernetes nodes
@@ -25,10 +41,10 @@
   roles:
     - k8s_common
 
-- name: Provision kubernetes control nodes
 
-  hosts:
-    - k8s_control
-
-  roles:
-    - k8s_control
+      #- name: Provision kubernetes control nodes
+      #
+      #  hosts: k8s_control
+      #
+      #  roles:
+      #    - k8s_control
