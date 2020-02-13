@@ -4,6 +4,6 @@ users:
   - name: ansible
     sudo: ["ALL=(ALL) NOPASSWD:ALL"]
     shell: /bin/bash
-    ssh_authorized_keys: {{ keys.results | selectattr('filename', 'equalto', "{{ ssh_keys_path }}/id_{{ item.name }}_rsa") | map('public_key') | list }}
+    ssh_authorized_keys: {{ keys.results | selectattr('item.name', 'equalto', item.name) | map(attribute='public_key') | list }}
 
 fqdn: "{{ item.name }}.{{ network.domain }}"
