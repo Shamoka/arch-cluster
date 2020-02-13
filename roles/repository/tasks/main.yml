@@ -16,20 +16,21 @@
     name: trizen
 
 - name: Check trizen packages
-  command: "trizen -T {{ packages_aur | join(' ' ) }}"
-  register: packages_present
+  command: "trizen -T {{ packages_aur | join(' ') }}"
+  register: packages_absent
   changed_when: false
+  failed_when: false
 
 - name: Install aur packages
-  command: "trizen -S --movepkg --noconfirm --needed {{ packages_aur | join(' ') }}"
-  when: packages_present.rc != 0
+  command: "trizen -S --movepkg --noconfirm --noedit {{ packages_absent.stdout | replace('\n', ' ') }}"
+  when: packages_absent.rc != 0
 
 - name: Create aur repo
-  shell: repo-add custom_aur.db.tar.gz *.pkg.*
+  shell: "repo-add custom_aur.db.tar.gz *.pkg.tar.xz"
   args:
     chdir: "{{ pacman_cache_path }}"
   become: yes
-  when: packages_present.rc != 0
+  when: packages_absent.rc != 0
 
 - name: Install pacman packages
   pacman:

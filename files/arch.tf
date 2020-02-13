@@ -109,6 +109,7 @@ resource "libvirt_domain" "nodes" {
 	network_interface {
 		network_id = libvirt_network.network.id
 		wait_for_lease = true
+		hostname = var.nodes[count.index].name
 	}
 }
 
