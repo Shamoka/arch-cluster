@@ -1,5 +1,2 @@
 ---
-ansible_become: yes
-ansible_become_user: kube
-
 pod_network_cidr: "10.0.0.0/16"

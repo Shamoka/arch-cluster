@@ -42,9 +42,9 @@
     - k8s_common
 
 
-      # - name: Provision kubernetes control nodes
-      # 
-      #   hosts: k8s_control
-      # 
-      #   roles:
-      #     - k8s_control
+- name: Provision kubernetes control nodes
+
+  hosts: k8s_control
+
+  roles:
+    - k8s_control
