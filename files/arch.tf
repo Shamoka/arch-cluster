@@ -30,20 +30,15 @@ variable "network" {
 	})
 }
 
-variable "paths" {
-	type = object({
-		project = string
-		tf = string
-		cloudinit = string
-		ssh_keys = string
-	})
+variable "path_cloudinit" {
+	type = string
 }
 
 provider "libvirt" {
 	uri = var.qemu_uri
 }
 
-resource "libvirt_cloudinit_disk" "commoninit" {
+resource "libvirt_cloudinit_disk" "init" {
 	name = "${var.nodes[count.index].name}_cloudinit.iso"
 	pool = var.volume_pool
 	user_data = data.template_file.user_data[count.index].rendered
@@ -53,17 +48,17 @@ resource "libvirt_cloudinit_disk" "commoninit" {
 }
 
 data "template_file" "user_data" {
-	template = file("${var.paths.cloudinit}/user-data-${var.nodes[count.index].name}")
+	template = file("${var.path_cloudinit}/user-data-${var.nodes[count.index].name}")
 	count = length(var.nodes)
 }
 
 data "template_file" "meta_data" {
-	template = file("${var.paths.cloudinit}/meta-data-${var.nodes[count.index].name}")
+	template = file("${var.path_cloudinit}/meta-data-${var.nodes[count.index].name}")
 	count = length(var.nodes)
 }
 
 data "template_file" "network_config" {
-	template = file("${var.paths.cloudinit}/network-config-${var.nodes[count.index].name}")
+	template = file("${var.path_cloudinit}/network-config-${var.nodes[count.index].name}")
 	count = length(var.nodes)
 }
 
@@ -103,13 +98,12 @@ resource "libvirt_domain" "nodes" {
 	}
 
 	disk {
-		volume_id = split(";", libvirt_cloudinit_disk.commoninit[count.index].id)[0]
+		volume_id = split(";", libvirt_cloudinit_disk.init[count.index].id)[0]
 	}
 
 	network_interface {
 		network_id = libvirt_network.network.id
 		wait_for_lease = true
-		hostname = var.nodes[count.index].name
 	}
 }
 

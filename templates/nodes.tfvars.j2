@@ -5,12 +5,7 @@ base_volume = {
 	pool = "{{ base.pool }}"
 }
 
-paths = {
-	project = "{{ project_path }}"
-	tf = "{{ terraform_path }}"
-	cloudinit = "{{ cloudinit_path }}"
-	ssh_keys = "{{ ssh_keys_path }}"
-}
+path_cloudinit = "{{ cloudinit_path }}"
 
 volume_pool = "{{ volume_pool }}"
 

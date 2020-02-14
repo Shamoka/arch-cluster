@@ -61,5 +61,5 @@
 
     - name: Write VM inventory
       template:
-        src: vms.j2
-        dest: "{{ vm_list }}"
+        src: virtual.j2
+        dest: "{{ project_path }}/virtual"
