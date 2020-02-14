@@ -29,3 +29,12 @@
       remote_src: yes
   become: yes
   when: not (stat_ret.stat.isdir is defined and stat_ret.stat.isdir)
+
+- name: Deploy calico pod network
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'calico.yaml.j2') }}"
+    apply: yes
+    kubeconfig: /home/kube/.kube/config
+  become: yes
+  become_user: kube
