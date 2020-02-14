@@ -1,23 +1,31 @@
 ---
-- name: Init cluster (kubeadm)
-  command: "kubeadm init --pod-network-cidr={{ pod_network_cidr }} --ignore-preflight-errors all"
-  become: yes
-
-- name: Create .kube directory for cluster admin
-  file:
-    state: directory
-    mode: 0700
-    owner: kube
-    group: kube
+- name: Check if cluster exists
+  stat:
     path: /home/kube/.kube
+  register: stat_ret
   become: yes
 
-- name: Copy cluster config to kube user directory
-  copy:
-    src: /etc/kubernetes/admin.conf
-    dest: /home/kube/.kube/config
-    mode: 0600
-    owner: kube
-    group: kube
-    remote_src: yes
+- name: Init cluster
+  block:
+  - name: kubeadm init
+    command: "kubeadm init --pod-network-cidr={{ pod_network_cidr }} \
+              --ignore-preflight-errors all"
+
+  - name: Create .kube directory for cluster admin
+    file:
+      state: directory
+      mode: 0700
+      owner: kube
+      group: kube
+      path: /home/kube/.kube
+
+  - name: Copy cluster config to kube user directory
+    copy:
+      src: /etc/kubernetes/admin.conf
+      dest: /home/kube/.kube/config
+      mode: 0600
+      owner: kube
+      group: kube
+      remote_src: yes
   become: yes
+  when: not (stat_ret.stat.isdir is defined and stat_ret.stat.isdir)
