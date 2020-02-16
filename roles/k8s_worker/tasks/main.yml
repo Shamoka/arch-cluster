@@ -2,5 +2,5 @@
 - name: Join cluster
   command: "{{ hostvars[(groups['k8s_control'] | first())]['join_command'].stdout }}"
   become: yes
-  when: (hostvars[(groups['k8s_control'] | first())]['node_list']['resources'] | selectattr('metadata.name', 'eq', name) | list)  is defined
+  when: hostvars[(groups['k8s_control'] | first())]['node_list']['resources'] | selectattr('metadata.name', 'eq', name) | list | length == 0
 
