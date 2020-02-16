@@ -11,8 +11,8 @@
     state: present
 
 - name: Set firewall configuration
-  copy:
-    src: iptables.rules
+  template:
+    src: iptables.rules.j2
     dest: /etc/iptables/iptables.rules
   become: yes
   notify: "restart firewall"

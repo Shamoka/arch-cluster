@@ -38,3 +38,17 @@
     kubeconfig: /home/kube/.kube/config
   become: yes
   become_user: kube
+
+- name: Get node list
+  k8s_info:
+    kind: Node
+  register: node_list
+  become: yes
+  become_user: kube
+  run_once: yes
+
+- name: Get join command
+  command: "kubeadm token create --print-join-command"
+  become: yes
+  register: join_command
+  run_once: yes

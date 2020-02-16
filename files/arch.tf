@@ -93,6 +93,8 @@ resource "libvirt_domain" "nodes" {
 
 	qemu_agent = true
 
+	running = true
+
 	disk {
 		volume_id = libvirt_volume.base[count.index].id
 	}
