@@ -35,7 +35,14 @@
     state: present
     definition: "{{ lookup('template', 'calico.yaml.j2') }}"
     apply: yes
-    kubeconfig: /home/kube/.kube/config
+  become: yes
+  become_user: kube
+
+- name: Deploy Metallb
+  k8s:
+    state: present
+    definition: "{{ lookup('file', 'metallb.yaml') }}"
+    apply: yes
   become: yes
   become_user: kube
 

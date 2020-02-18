@@ -1,0 +1,4 @@
+---
+packages:
+  - lvm2
+  - glusterfs

@@ -32,6 +32,15 @@
     - common
 
 
+- name: Provision storage nodes
+
+  hosts:
+    - storage
+
+  roles:
+    - storage
+
+
 - name: Provision kubernetes nodes
 
   hosts:

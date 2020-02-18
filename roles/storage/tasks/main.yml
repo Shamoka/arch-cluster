@@ -1,0 +1,7 @@
+---
+- name: Install required packages
+  pacman:
+    name: "{{ packages }}"
+    state: present
+    update_cache: yes
+  become: yes
