@@ -1,16 +1,8 @@
----
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: gluster
-  labels:
-    name: gluster
----
 apiVersion: v1
 kind: Service
 metadata:
   name: glusterfs-cluster 
-  namespace: gluster
+  namespace: default
 spec:
   ports:
   - port: 24010
@@ -19,7 +11,7 @@ apiVersion: v1
 kind: Endpoints
 metadata:
   name: glusterfs-cluster 
-  namespace: gluster
+  namespace: default
 subsets:
 {% for gluster_node in groups['storage'] %}
   - addresses:

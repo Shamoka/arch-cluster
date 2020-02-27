@@ -46,10 +46,21 @@
   become: yes
   become_user: kube
 
-- name: Create persistent volumes
+- name: Create persistent volumes service and endpoint
   k8s:
     state: present
     definition: "{{ lookup('template', 'gluster-endpoints.yml.j2') }}"
+    apply: yes
+  become: yes
+  become_user: kube
+  run_once: yes
+
+- name: Create persitent volumes
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'gluster-pv.yml.j2') }}"
+    apply: yes
+  loop: "{{ hostvars[groups['storage'][0]]['storage']['layout'] }}"
   become: yes
   become_user: kube
   run_once: yes
