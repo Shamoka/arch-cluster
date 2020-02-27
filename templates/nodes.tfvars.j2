@@ -25,3 +25,16 @@ nodes = [
 	},
 	{% endfor %}
 ]
+
+storage_nodes = [
+	{% for elem in storage_nodes %}
+	{
+		name = "{{ elem.name }}"
+		memory = "{{ elem.memory }}"
+		vcpu = "{{ elem.vcpu }}"
+		network = "{{ elem.network }}"
+	},
+	{% endfor %}
+]
+
+storage_size = "{{ storage_size }}"

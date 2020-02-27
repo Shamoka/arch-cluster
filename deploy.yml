@@ -3,6 +3,9 @@
   
   hosts: all
 
+  vars:
+    all_nodes: "{{ nodes + storage_nodes }}"
+
   tasks:
     - name: Create directories
       file:
@@ -22,34 +25,38 @@
 
     - name: Create terraform plan
       copy:
-        src: arch.tf
+        src: "{{ item }}"
         dest: "{{ terraform_path }}"
+      loop:
+        - arch.tf
+        - nodes.tf
+        - storage_nodes.tf
 
     - name: Generate ssh keys
       openssh_keypair:
         path: "{{ ssh_keys_path }}/id_{{ item.name }}_rsa"
         type: rsa
         size: 4096
-      loop: "{{ nodes }}"
+      loop: "{{ all_nodes }}"
       register: keys
 
     - name: Create user-data for cloud init
       template:
         src: templates/user-data.j2
         dest: "{{ cloudinit_path }}/user-data-{{ item.name }}"
-      loop: "{{ nodes }}"
+      loop: "{{ all_nodes }}"
 
     - name: Create meta-data for cloud init
       template:
         src: templates/meta-data.j2
         dest: "{{ cloudinit_path }}/meta-data-{{ item.name }}"
-      loop: "{{ nodes }}"
+      loop: "{{ all_nodes }}"
 
     - name: Create network-config for cloud init
       template:
         src: templates/network-config.j2
         dest: "{{ cloudinit_path }}/network-config-{{ item.name }}"
-      loop: "{{ nodes }}"
+      loop: "{{ all_nodes }}"
 
     - name: Deploy
       terraform:

@@ -1,10 +1,18 @@
 all:
   hosts:
-{% for entry in tf_out.outputs.domain_info.value %}
+{% for entry in tf_out.outputs.nodes_info.value %}
     {{ entry.network_interface[0].addresses[0] }}:
       ansible_user: ansible
       ansible_python_interpreter: /usr/bin/python
       name: {{ entry.name }}
       type: {{ (nodes | selectattr('name', 'equalto', entry.name) | first ).type }}
+      ansible_private_key_file: "{{ ssh_keys_path }}/id_{{ entry.name }}_rsa"
+{% endfor %}
+{% for entry in tf_out.outputs.storage_nodes_info.value %}
+    {{ entry.network_interface[0].addresses[0] }}:
+      ansible_user: ansible
+      ansible_python_interpreter: /usr/bin/python
+      name: {{ entry.name }}
+      type: {{ (storage_nodes | selectattr('name', 'equalto', entry.name) | first ).type }}
       ansible_private_key_file: "{{ ssh_keys_path }}/id_{{ entry.name }}_rsa"
 {% endfor %}
