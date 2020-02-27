@@ -46,6 +46,14 @@
   become: yes
   become_user: kube
 
+- name: Create persistent volumes
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'gluster-endpoints.yml.j2') }}"
+  become: yes
+  become_user: kube
+  run_once: yes
+
 - name: Get node list
   k8s_info:
     kind: Node
