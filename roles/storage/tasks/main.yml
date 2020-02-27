@@ -5,3 +5,70 @@
     state: present
     update_cache: yes
   become: yes
+
+- name: Start required services
+  service:
+    name: "{{ item }}"
+    enabled: yes
+    state: started
+  become: yes
+  loop:
+    - lvm2-lvmetad
+    - glusterd
+
+- name: Create lvm partition
+  parted:
+    device: "{{ storage.device }}"
+    number: 1
+    flags:
+      - lvm
+    state: present
+  become: yes
+
+- name: Create lvm physical volume group
+  lvg:
+    vg: "{{ storage.vg_name }}"
+    pvs: "{{ storage.device }}1"
+  become: yes
+
+- name: Create lvm volumes
+  lvol:
+    vg: "{{ storage.vg_name }}"
+    lv: "{{ item.name }}"
+    size: "{{ item.size }}"
+  loop: "{{ storage.layout }}"
+  become: yes
+
+- name: Format lvm volumes
+  filesystem:
+    fstype: "{{ storage.fs }}"
+    dev: "/dev/{{ storage.vg_name }}/{{ item.name }}"
+  loop: "{{ storage.layout }}"
+  become: yes
+
+- name: Mount lvm volumes
+  mount:
+    path: "{{ storage.mount_point }}/{{ item.name }}"
+    src: "/dev/{{ storage.vg_name }}/{{ item.name }}"
+    fstype: "{{ storage.fs }}"
+    state: mounted
+  loop: "{{ storage.layout }}"
+  become: yes
+
+- name: Create bricks
+  file:
+    state: directory
+    path: "{{ storage.mount_point }}/{{ item.name }}/brick"
+  loop: "{{ storage.layout }}"
+  become: yes
+
+- name: Create gluster volumes
+  gluster_volume:
+    state: present
+    name: "{{ item.name }}"
+    bricks: "{{ storage.mount_point }}/{{ item.name }}/brick"
+    rebalance: yes
+    cluster: "{{ groups['storage'] }}"
+  become: yes
+  loop: "{{ storage.layout }}"
+  run_once: yes

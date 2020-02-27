@@ -2,3 +2,4 @@
 packages:
   - lvm2
   - glusterfs
+  - parted
