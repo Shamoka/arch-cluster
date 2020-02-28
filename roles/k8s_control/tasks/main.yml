@@ -81,11 +81,13 @@
   become_user: kube
   run_once: yes
 
-- name: Get helm repositor-y list
+- name: Get helm repository list
   command: helm repo list -o yaml
-  register: helm_repo_list
+  register: ret
   become: yes
   become_user: kube
+  failed_when: ret.rc != 0 and "no repositories to show" not in ret.stderr
+  changed_when: false
 
 - name: Initialize helm
   block:
@@ -96,7 +98,7 @@
     command: helm repo update
   become: yes
   become_user: kube
-  when: not helm_repo in helm_repo_list.stdout
+  when: not helm_repo in ret.stdout
 
 - name: Create ingress namespace
   k8s:
@@ -114,6 +116,7 @@
   become: yes
   become_user: kube
   run_once: yes
+  changed_when: false
 
 - name: Install nginx ingress controller
   command: helm install nginx-ingress stable/nginx-ingress --namespace ingress
@@ -135,3 +138,4 @@
   become: yes
   register: join_command
   run_once: yes
+  changed_when: false

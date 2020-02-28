@@ -1,0 +1,21 @@
+---
+- name: Assign hosts to groups
+
+  hosts: all
+
+  tasks:
+    - name: Assign hosts to groups
+      add_host:
+        name: "{{ item }}"
+        groups:
+          - "{{ hostvars[item].type }}"
+      loop: "{{ groups['all'] }}"
+      changed_when: false
+
+- name: Provision kubernetes control nodes
+
+  hosts: k8s_control
+
+  roles:
+    - k8s_control
+

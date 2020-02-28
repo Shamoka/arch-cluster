@@ -58,7 +58,6 @@
   roles:
     - k8s_control
 
-  tasks:
 - name: Provision kubernetes worker nodes
   
   hosts: k8s_worker
