@@ -4,3 +4,5 @@ pod_network_cidr: "10.0.0.0/16"
 packages:
   - kubernetes-helm-bin
   - kubectl-bin
+
+helm_repo: https://kubernetes-charts.storage.googleapis.com

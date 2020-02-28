@@ -10,3 +10,5 @@ packages:
   - bridge-utils
   - python-openshift
   - glusterfs
+
+helm_repo: https://kubernetes-charts.storage.googleapis.com

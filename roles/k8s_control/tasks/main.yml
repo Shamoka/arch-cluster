@@ -81,6 +81,47 @@
   become_user: kube
   run_once: yes
 
+- name: Get helm repositor-y list
+  command: helm repo list -o yaml
+  register: helm_repo_list
+  become: yes
+  become_user: kube
+
+- name: Initialize helm
+  block:
+  - name: Initialize helm stable repository
+    command: "helm repo add stable {{ helm_repo }}"
+
+  - name: Update helm repository
+    command: helm repo update
+  become: yes
+  become_user: kube
+  when: not helm_repo in helm_repo_list.stdout
+
+- name: Create ingress namespace
+  k8s:
+    api_version: v1
+    name: ingress
+    kind: Namespace
+    state: present
+  become: yes
+  become_user: kube
+  run_once: yes
+
+- name: check for nginx ingress controller
+  command: helm list -q -n ingress
+  register: ingress_present
+  become: yes
+  become_user: kube
+  run_once: yes
+
+- name: Install nginx ingress controller
+  command: helm install nginx-ingress stable/nginx-ingress --namespace ingress
+  become: yes
+  become_user: kube
+  run_once: yes
+  when: ingress_present.stdout == ""
+
 - name: Get node list
   k8s_info:
     kind: Node
