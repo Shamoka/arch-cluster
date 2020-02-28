@@ -15,6 +15,7 @@ packages_aur:
   - kubeadm-bin
   - kubelet-bin
   - python-openshift
+  - kubernetes-helm-bin
 
 pacman_db_path: /var/lib/pacman/sync
 

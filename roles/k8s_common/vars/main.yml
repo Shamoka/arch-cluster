@@ -1,6 +1,5 @@
 ---
 packages:
-  - kubectl-bin
   - kubeadm-bin
   - kubelet-bin
   - ebtables
@@ -10,3 +9,4 @@ packages:
   - crictl-bin
   - bridge-utils
   - python-openshift
+  - glusterfs

@@ -1,2 +1,6 @@
 ---
 pod_network_cidr: "10.0.0.0/16"
+
+packages:
+  - kubernetes-helm-bin
+  - kubectl-bin

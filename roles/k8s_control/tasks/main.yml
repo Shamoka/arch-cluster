@@ -1,4 +1,10 @@
 ---
+- name: Install required packages
+  pacman:
+    name: "{{ packages }}"
+    state: present
+  become: yes
+
 - name: Check if cluster exists
   stat:
     path: /home/kube/.kube
@@ -45,6 +51,16 @@
     apply: yes
   become: yes
   become_user: kube
+  run_once: yes
+
+- name: Deploy Metallb config
+  k8s:
+    state: present
+    definition: "{{ lookup('template', 'metallb-config.yml.j2') }}"
+    apply: yes
+  become: yes
+  become_user: kube
+  run_once: yes
 
 - name: Create persistent volumes service and endpoint
   k8s:
